@@ -1,0 +1,6 @@
+# ocr2 — Sarvam AI engine dependencies
+sarvamai>=0.1.0
+beautifulsoup4>=4.12.0
+
+# Requires SARVAM_API_KEY in main/.env
+# Get your key from: https://www.sarvam.ai

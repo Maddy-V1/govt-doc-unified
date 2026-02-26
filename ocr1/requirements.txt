@@ -1,0 +1,13 @@
+# ocr1 — Tesseract engine dependencies
+pytesseract>=0.3.10
+opencv-python>=4.8.0
+Pillow>=10.0.0
+pdf2image>=1.16.3
+PyPDF2>=3.0.0
+numpy>=1.24.0
+
+# System dependencies (install separately):
+# macOS:        brew install tesseract poppler
+# Ubuntu:       sudo apt-get install tesseract-ocr poppler-utils
+# Windows:      https://github.com/UB-Mannheim/tesseract/wiki
+#               https://github.com/oschwartz10612/poppler-windows/releases/

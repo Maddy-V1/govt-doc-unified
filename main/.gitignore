@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+venv/
+env/
+ENV/
+.Python
+build/
+dist/
+*.egg-info/
+
+# Environment — keep .env.example, ignore actual .env
+.env
+.env.local
+# DO NOT ignore .env.example
+
+# Uploads and data (keep folder structure, ignore contents)
+uploads/pdfs/*
+uploads/images/*
+uploads/processed/*
+!uploads/pdfs/.gitkeep
+!uploads/images/.gitkeep
+!uploads/processed/.gitkeep
+
+data/extracted_json/*
+!data/extracted_json/.gitkeep
+data/logs/*
+!data/logs/.gitkeep
+
+# Vector DB index files (regenerated on use)
+vector_db/faiss.index
+vector_db/metadata.pkl
+!vector_db/.gitkeep
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend build output
+frontend/dist/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Stray backup files
+*_backup.py

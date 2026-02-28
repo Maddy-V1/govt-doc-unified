@@ -14,9 +14,13 @@ from fastapi.responses import JSONResponse
 from backend.core.config import settings
 from backend.services import ocr_service
 from backend.agents import validation_agent
+from backend.services.metadata_service import MetadataService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+# Initialize metadata service
+metadata_service = MetadataService()
 
 ALLOWED_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png"}
 
@@ -205,6 +209,26 @@ async def upload_document(file: UploadFile = File(...)):
         json_path = settings.DATA_DIR / "extracted_json" / f"{file_id}.json"
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(result_data, f, indent=2, ensure_ascii=False)
+
+        # ── 8. Save extraction metadata (text + JSON + CSV) ───────────────────
+        preprocessing_metadata = {
+            "cleaned_text_length": len(cleaned_text),
+            "normalized_text_length": len(search_text),
+            "chunks_created": len(chunks),
+            "metadata_extracted": doc_metadata,
+        }
+        
+        # Extract CSV data if available (PaddleOCR)
+        csv_data = ocr_result.get("csv_data", None)
+        
+        metadata_service.save_extraction(
+            file_id=file_id,
+            filename=file.filename,
+            ocr_result=ocr_result,
+            validation=validation,
+            preprocessing_result=preprocessing_metadata,
+            csv_data=csv_data
+        )
 
         logger.info("Upload complete in %d ms", processing_time_ms)
         return result_data

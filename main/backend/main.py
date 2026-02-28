@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.core.config import settings
-from backend.routes import upload, chat, health
+from backend.routes import upload, chat, health, extractions
 
 # Configure logging
 logging.basicConfig(
@@ -86,6 +86,7 @@ app.add_middleware(
 app.include_router(upload.router, tags=["Upload"])
 app.include_router(chat.router, tags=["Chat"])
 app.include_router(health.router, tags=["Health"])
+app.include_router(extractions.router, tags=["Extractions"])
 
 
 @app.get("/")
@@ -101,6 +102,7 @@ async def root():
             "upload": "/upload",
             "chat": "/chat",
             "health": "/health",
+            "extractions": "/extractions",
             "docs": "/docs"
         }
     }

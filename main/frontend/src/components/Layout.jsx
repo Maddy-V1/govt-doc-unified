@@ -21,6 +21,16 @@ function Layout({ children }) {
                 Upload
               </Link>
               <Link
+                to="/extractions"
+                className={`px-4 py-2 rounded transition ${
+                  location.pathname === '/extractions'
+                    ? 'bg-blue-700'
+                    : 'hover:bg-blue-500'
+                }`}
+              >
+                Extractions
+              </Link>
+              <Link
                 to="/chat"
                 className={`px-4 py-2 rounded transition ${
                   location.pathname === '/chat'

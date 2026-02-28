@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def run_ocr(file_path: Path, original_filename: str) -> Dict:
     """
-    Run OCR on document using configured engine (Tesseract or Sarvam)
+    Run OCR on document using configured engine (Tesseract, Sarvam, or PaddleOCR)
     
     Args:
         file_path: Path to the document file
@@ -27,10 +27,13 @@ async def run_ocr(file_path: Path, original_filename: str) -> Dict:
         Dict with OCR results including full_text, pages, confidence, etc.
     """
     try:
-        if settings.OCR_ENGINE.lower() == "tesseract":
+        engine = settings.OCR_ENGINE.lower()
+        if engine == "tesseract":
             return await _run_tesseract_ocr(file_path, original_filename)
-        elif settings.OCR_ENGINE.lower() == "sarvam":
+        elif engine == "sarvam":
             return await _run_sarvam_ocr(file_path, original_filename)
+        elif engine == "paddleocr":
+            return await _run_paddle_ocr(file_path, original_filename)
         else:
             raise ValueError(f"Unknown OCR engine: {settings.OCR_ENGINE}")
     except Exception as e:
@@ -160,4 +163,47 @@ async def _run_sarvam_ocr(file_path: Path, original_filename: str) -> Dict:
         
     except Exception as e:
         logger.error(f"Sarvam OCR failed: {str(e)}")
+        raise
+
+
+async def _run_paddle_ocr(file_path: Path, original_filename: str) -> Dict:
+    """Run PaddleOCR pipeline"""
+    try:
+        # Import ocr3 module
+        from ocr3.paddle_engine import PaddleOCREngine
+        
+        logger.info(f"Running PaddleOCR on {original_filename}")
+        
+        # Initialize engine (cached after first use)
+        engine = PaddleOCREngine()
+        
+        # Process file
+        result = engine.process_file(str(file_path))
+        
+        if not result.get("success"):
+            raise ValueError("PaddleOCR processing failed")
+        
+        # Format pages data to match expected structure
+        pages_data = []
+        for page in result.get("pages", []):
+            pages_data.append({
+                "page_number": page["page"],
+                "text": page["text"],
+                "confidence": page["confidence"],
+                "word_count": page["word_count"]
+            })
+        
+        return {
+            "full_text": result["full_text"],
+            "pages": pages_data,
+            "total_pages": result["total_pages"],
+            "confidence": round(result["confidence"], 3),
+            "word_count": result["word_count"],
+            "structured_fields": {},  # PaddleOCR doesn't do field extraction by default
+            "ocr_engine": "paddleocr",
+            "csv_data": result.get("csv_data", [])  # Include CSV data for metadata service
+        }
+        
+    except Exception as e:
+        logger.error(f"PaddleOCR failed: {str(e)}")
         raise

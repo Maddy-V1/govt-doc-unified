@@ -1,0 +1,16 @@
+# PaddleOCR Requirements
+
+# Core PaddleOCR
+paddlepaddle>=2.5.0  # CPU version
+# paddlepaddle-gpu>=2.5.0  # Uncomment for GPU version (requires CUDA)
+paddleocr>=2.7.0
+
+# Image processing
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# PDF handling
+PyMuPDF>=1.23.0
+
+# Optional: For better performance
+Pillow>=10.0.0
